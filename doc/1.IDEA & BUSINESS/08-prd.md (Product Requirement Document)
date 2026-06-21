@@ -1,0 +1,93 @@
+# Product Requirement Document (PRD)
+
+## Introduction
+
+This document defines the product requirements for the MediGo Medicine Delivery System. It outlines the features, goals, user needs, and expected behavior of the system.
+
+---
+
+## Product Goal
+
+To build a mobile-based medicine delivery platform that allows users to order medicines online, upload prescriptions, and receive medicines at their doorstep efficiently and securely.
+
+---
+
+## Product Scope
+
+The system will include:
+
+* Mobile application for users
+* Web-based admin dashboard
+* Backend API for managing data and orders
+
+The system will not initially include:
+
+* Real-time doctor consultation
+* Hospital integration
+
+---
+
+## Key Features
+
+### 1. User Features
+
+* User registration and login
+* Medicine search and browsing
+* Add to cart and checkout
+* Prescription upload
+* Order tracking
+* Order history
+
+---
+
+### 2. Admin Features
+
+* Manage medicines and inventory
+* Approve or reject prescription orders
+* Manage user orders
+* View reports and analytics
+
+---
+
+### 3. System Features
+
+* Secure authentication system
+* Real-time database updates
+* Notification system for order updates
+
+---
+
+## User Requirements
+
+Users should be able to:
+
+* Easily find medicines
+* Place orders without difficulty
+* Upload prescriptions safely
+* Track delivery status
+
+---
+
+## Constraints
+
+* Internet connection required
+* Prescription validation depends on admin/pharmacy
+* Delivery time depends on logistics system
+
+---
+
+## Assumptions
+
+* Users have smartphones
+* Pharmacies are willing to participate in the system
+* Users understand basic mobile app usage
+
+---
+
+## Success Criteria
+
+The product will be considered successful if:
+
+* Users can place medicine orders successfully
+* Admin can manage orders efficiently
+* System works smoothly without major errors
