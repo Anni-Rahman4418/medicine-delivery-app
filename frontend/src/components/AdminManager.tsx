@@ -19,6 +19,14 @@ export const AdminManager: React.FC = () => {
 
   const pending = allPrescriptions.filter((p) => p.status === 'Pending');
 
+  const [userSearch, setUserSearch] = useState('');
+  const filteredUsers = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+      u.email.toLowerCase().includes(userSearch.toLowerCase()) ||
+      u.role.toLowerCase().includes(userSearch.toLowerCase())
+  );
+
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
       <h1 className="font-serif" style={{ fontSize: '1.6rem', marginBottom: 24 }}>Admin dashboard</h1>
@@ -82,9 +90,18 @@ export const AdminManager: React.FC = () => {
       </section>
 
       <section>
-        <h2 className="font-serif" style={{ fontSize: '1.2rem', marginBottom: 14 }}>Users</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <h2 className="font-serif" style={{ fontSize: '1.2rem', margin: 0 }}>Users ({filteredUsers.length})</h2>
+          <input
+            className="form-input"
+            style={{ width: 220, padding: '6px 12px', fontSize: '0.85rem' }}
+            placeholder="Search users by name, email..."
+            value={userSearch}
+            onChange={(e) => setUserSearch(e.target.value)}
+          />
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {users.map((u) => (
+          {filteredUsers.map((u) => (
             <div key={u.id} className="glass-card" style={{ padding: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <span style={{ fontWeight: 600 }}>{u.name}</span>
