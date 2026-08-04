@@ -1,10 +1,12 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { CartIcon, UserIcon, PillIcon } from './Icons';
+import { CartIcon, UserIcon, PillIcon, BellIcon } from './Icons';
 
 export const Navbar: React.FC = () => {
-  const { currentUser, cart, setIsCartOpen, setIsAuthOpen, logout, activeView, setActiveView, isBackendOnline } = useApp();
+  const { currentUser, cart, orders, setActiveOrder, setIsCartOpen, setIsAuthOpen, logout, activeView, setActiveView, isBackendOnline } = useApp();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const activeOrdersCount = orders.filter((o) => o.status !== 'Delivered' && o.status !== 'Cancelled').length;
+  const latestActiveOrder = orders.find((o) => o.status !== 'Delivered' && o.status !== 'Cancelled');
 
   return (
     <nav className="glass" style={{ position: 'sticky', top: 0, zIndex: 50, padding: '14px 24px' }}>
@@ -45,6 +47,24 @@ export const Navbar: React.FC = () => {
               onClick={() => setActiveView('marketplace')}
             >
               Marketplace
+            </button>
+          )}
+
+          {activeOrdersCount > 0 && (
+            <button
+              className="btn btn-icon btn-secondary"
+              title="Track active order"
+              onClick={() => latestActiveOrder && setActiveOrder(latestActiveOrder)}
+              style={{ position: 'relative' }}
+            >
+              <BellIcon size={18} color="var(--accent-teal)" />
+              <span style={{
+                position: 'absolute', top: -4, right: -4, background: 'var(--accent-amber)', color: '#04140f',
+                borderRadius: '50%', width: 18, height: 18, fontSize: 11, fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {activeOrdersCount}
+              </span>
             </button>
           )}
 
