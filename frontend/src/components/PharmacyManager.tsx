@@ -8,13 +8,40 @@ export const PharmacyManager: React.FC = () => {
   const myMedicines = medicines.filter((m) => m.pharmacyId === currentUser?.id);
   const myOrders = orders.filter((o) => o.items.some((item) => myMedicines.some((m) => m.id === item.medicineId)));
 
+  const handleExportCSV = () => {
+    if (myMedicines.length === 0) return;
+    const headers = ['ID', 'Name', 'Category', 'Price', 'Stock', 'Prescription Required', 'Manufacturer'];
+    const rows = myMedicines.map((m) => [
+      m.id,
+      `"${m.name.replace(/"/g, '""')}"`,
+      `"${m.category}"`,
+      m.price,
+      m.stock,
+      m.requiresPrescription ? 'Yes' : 'No',
+      `"${m.manufacturer || ''}"`,
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `${(currentUser?.pharmacyName || 'pharmacy').toLowerCase().replace(/\s+/g, '_')}_inventory.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 className="font-serif" style={{ fontSize: '1.6rem' }}>{currentUser?.pharmacyName || currentUser?.name}'s inventory</h1>
-        <button className="btn btn-primary" onClick={() => { setEditingMedicine(null); setIsMedicineFormOpen(true); }}>
-          <PlusIcon size={16} /> Add medicine
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn btn-secondary" onClick={handleExportCSV} disabled={myMedicines.length === 0}>
+            Export CSV
+          </button>
+          <button className="btn btn-primary" onClick={() => { setEditingMedicine(null); setIsMedicineFormOpen(true); }}>
+            <PlusIcon size={16} /> Add medicine
+          </button>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16, marginBottom: 40 }}>
