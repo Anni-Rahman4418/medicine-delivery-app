@@ -78,14 +78,21 @@ def update_medicine(medicine_id: str, updates: MedicineUpdateSchema):
         conn.close()
         return get_medicine_by_id(medicine_id)
 
+    FIELD_MAP = {
+        "imageUrl": "image_url",
+        "requiresPrescription": "requires_prescription",
+        "pharmacyId": "pharmacy_id",
+        "pharmacyName": "pharmacy_name",
+    }
+
     set_clauses = []
     params = []
     for key, val in update_dict.items():
-        if key == "requiresPrescription":
+        if key == "requiresPrescription" and val is not None:
             val = int(val)
 
-        snake_key = "".join(["_" + c.lower() if c.isupper() else c for c in key]).lstrip("_")
-        set_clauses.append(f"{snake_key} = ?")
+        col_name = FIELD_MAP.get(key, key)
+        set_clauses.append(f"{col_name} = ?")
         params.append(val)
 
     params.append(medicine_id)

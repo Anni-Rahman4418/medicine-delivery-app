@@ -55,6 +55,12 @@ def create_order(order: OrderSchema):
         order.totalAmount, order.paymentMethod, order.status, order.estimatedDeliveryTime,
         "MediGo Rider", "+1 (555) 900-2200"
     ))
+    for item in order.items:
+        m_id = item.get("id") or item.get("medicineId")
+        qty = item.get("quantity", 1)
+        if m_id:
+            cursor.execute("UPDATE medicines SET stock = MAX(0, stock - ?) WHERE id = ?", (qty, m_id))
+
     conn.commit()
     conn.close()
     return {**order.dict(), "id": order_id}

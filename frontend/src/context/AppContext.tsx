@@ -240,6 +240,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setOrders((prev) => [order, ...prev]);
     setActiveOrder(order);
+
+    // Deduct stock in local state
+    setMedicines((prev) =>
+      prev.map((m) => {
+        const cartMatch = cart.find((ci) => ci.medicine.id === m.id);
+        if (cartMatch) {
+          return { ...m, stock: Math.max(0, m.stock - cartMatch.quantity) };
+        }
+        return m;
+      })
+    );
+
     clearCart();
     showToast('Order placed!');
     return order;
