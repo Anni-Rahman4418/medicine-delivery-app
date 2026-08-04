@@ -50,6 +50,18 @@ export const PrescriptionModal: React.FC = () => {
               onChange={(e) => setImageUrl(e.target.value)}
             />
           </div>
+
+          {imageUrl && (
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 6 }}>Prescription Preview:</p>
+              <img
+                src={imageUrl}
+                alt="Prescription preview"
+                style={{ width: '100%', maxHeight: 150, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)' }}
+              />
+            </div>
+          )}
+
           <button className="btn btn-primary" style={{ width: '100%' }} disabled={isSubmitting}>
             <UploadIcon size={16} /> {isSubmitting ? 'Uploading...' : 'Submit for review'}
           </button>
