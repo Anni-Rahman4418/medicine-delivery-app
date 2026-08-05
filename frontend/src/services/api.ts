@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   CART: 'mg_cart',
 };
 
+
 const getStored = <T,>(key: string, fallback: T): T => {
   try {
     const raw = localStorage.getItem(key);
