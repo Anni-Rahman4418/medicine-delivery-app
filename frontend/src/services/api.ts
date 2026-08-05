@@ -3,7 +3,7 @@ import { Medicine, Order, User, Prescription } from '../types';
 import { INITIAL_MEDICINES, INITIAL_ORDERS, INITIAL_USERS } from '../data/mockData';
 
 const API_ROOT = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-   const API_BASE = `${API_ROOT}/api`;
+const API_BASE = `${API_ROOT}/api`;
 
 const STORAGE_KEYS = {
   MEDICINES: 'mg_medicines',
@@ -42,7 +42,7 @@ export const apiService = {
 
   // AUTH
   async login(email: string, password: string) {
-    const res = await axios.get(`${API_ROOT}/`, { timeout: 2500 });
+    const res = await axios.post(`${API_BASE}/login`, { email, password }, { timeout: 3000 });
     return res.data;
   },
 
