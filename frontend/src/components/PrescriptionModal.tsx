@@ -4,21 +4,26 @@ import { CloseIcon, UploadIcon } from './Icons';
 
 export const PrescriptionModal: React.FC = () => {
   const { isPrescriptionModalOpen, setIsPrescriptionModalOpen, uploadPrescription, showToast } = useApp();
-  const [imageUrl, setImageUrl] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isPrescriptionModalOpen) return null;
 
-  // there's no real file storage wired up in the backend yet, so for now
-  // this takes an image URL - swap for an actual file upload once that
-  // piece exists (see backend/README.md)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] || null;
+    setFile(selected);
+    setPreviewUrl(selected ? URL.createObjectURL(selected) : '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imageUrl) return;
+    if (!file) return;
     setIsSubmitting(true);
     try {
-      await uploadPrescription(imageUrl);
-      setImageUrl('');
+      await uploadPrescription(file);
+      setFile(null);
+      setPreviewUrl('');
       setIsPrescriptionModalOpen(false);
     } catch (err) {
       showToast('Could not upload prescription', 'error');
@@ -41,28 +46,28 @@ export const PrescriptionModal: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Prescription image URL</label>
+            <label className="form-label">Prescription photo</label>
             <input
+              type="file"
+              accept="image/*"
               className="form-input"
               required
-              placeholder="https://..."
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              onChange={handleFileChange}
             />
           </div>
 
-          {imageUrl && (
+          {previewUrl && (
             <div style={{ marginBottom: 16 }}>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 6 }}>Prescription Preview:</p>
               <img
-                src={imageUrl}
+                src={previewUrl}
                 alt="Prescription preview"
                 style={{ width: '100%', maxHeight: 150, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)' }}
               />
             </div>
           )}
 
-          <button className="btn btn-primary" style={{ width: '100%' }} disabled={isSubmitting}>
+          <button className="btn btn-primary" style={{ width: '100%' }} disabled={isSubmitting || !file}>
             <UploadIcon size={16} /> {isSubmitting ? 'Uploading...' : 'Submit for review'}
           </button>
         </form>
