@@ -37,7 +37,7 @@ interface AppContextType {
 
   prescriptions: Prescription[];
   myApprovedPrescription: Prescription | null;
-  uploadPrescription: (imageUrl: string) => Promise<Prescription>;
+  uploadPrescription: (file: File) => Promise<Prescription>;
   reviewPrescription: (id: string, status: 'Approved' | 'Rejected', notes?: string) => Promise<void>;
 
   orders: Order[];
@@ -199,9 +199,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const myApprovedPrescription = prescriptions.find((p) => p.status === 'Approved') || null;
 
   // PRESCRIPTIONS
-  const uploadPrescription = async (imageUrl: string) => {
+  const uploadPrescription = async (file: File) => {
     if (!currentUser) throw new Error('Must be logged in');
-    const presc = await apiService.uploadPrescription(currentUser.id, currentUser.name, imageUrl);
+    const presc = await apiService.uploadPrescription(currentUser.id, currentUser.name, file);
     setPrescriptions((prev) => [presc, ...prev]);
     showToast('Prescription uploaded - waiting for approval');
     return presc;
