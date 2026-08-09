@@ -112,16 +112,28 @@ export const apiService = {
     }
   },
 
-  async uploadPrescription(userId: string, userName: string, imageUrl: string): Promise<Prescription> {
+  // uploads an actual prescription image file (multipart/form-data) to the
+  // backend, which stores it on disk and returns back the saved image URL
+  async uploadPrescription(userId: string, userName: string, file: File): Promise<Prescription> {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('userName', userName);
+    formData.append('file', file);
+
     try {
-      const res = await axios.post(`${API_BASE}/prescriptions`, { userId, userName, imageUrl }, { timeout: 3000 });
+      const res = await axios.post(`${API_BASE}/prescriptions/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 8000,
+      });
       return res.data;
     } catch {
+      // fallback: no backend available, fake it locally using an object URL
+      // so the UI still works while offline / during development
       const newPresc: Prescription = {
         id: `presc-${Date.now()}`,
         userId,
         userName,
-        imageUrl,
+        imageUrl: URL.createObjectURL(file),
         status: 'Pending',
         createdAt: new Date().toISOString(),
       };
